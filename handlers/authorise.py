@@ -8,11 +8,28 @@ from fsm.fsm import Authorise
 from filters.check_chat import CheckChatFilter
 from filters.admin_or_employee import CheckUserFilter
 from filters.is_command import isCommandFilter
+from filters.is_auth import isUserAuthFilter
 from config.config import config
 from db import DB
 
 
 router_authorise = Router()
+
+
+@router_authorise.message(isUserAuthFilter())
+async def user_not_auth(message: Message):
+    await message.answer(text="Похоже, пока что Вас нет в базе данных\n\n"
+                              "Нажмите на /start, чтобы авторизоваться")
+
+
+@router_authorise.message(CheckUserFilter(config.admins, config.employees))
+async def warning_user(message: Message):
+    await message.answer(text="Вас нет в списке работников данной компании")
+
+
+@router_authorise.message(CheckChatFilter(config.admin_chats))
+async def warning_chat(message: Message):
+    pass
 
 
 @router_authorise.message(~StateFilter(default_state), isCommandFilter())
@@ -33,16 +50,6 @@ async def process_cancel_in_states_command(message: Message, state: FSMContext):
 @router_authorise.message(StateFilter(default_state), F.text.startswith("/") == False)
 async def warning_default(message: Message):
     await message.answer(text="Выберите нужную Вам команду из выпадающего меню")
-
-
-@router_authorise.message(CheckChatFilter(config.admin_chats))
-async def warning_chat(message: Message):
-    pass
-
-
-@router_authorise.message(CheckUserFilter(config.admins, config.employees))
-async def warning_user(message: Message):
-    await message.answer(text="Вас нет в списке работников данной компании")
 
 
 @router_authorise.message(Command(commands="start"), StateFilter(default_state))
