@@ -7,7 +7,6 @@ from aiogram.fsm.context import FSMContext
 from fsm.fsm import Authorise
 from filters.check_chat import CheckChatFilter
 from filters.admin_or_employee import CheckUserFilter
-from filters.is_command import isCommandFilter
 from filters.is_auth import isUserAuthFilter
 from config.config import config
 from db import DB
@@ -26,7 +25,7 @@ async def warning_chat(message: Message):
     pass
 
 
-@router_authorise.message(~StateFilter(default_state), isCommandFilter())
+@router_authorise.message(~StateFilter(default_state), F.text.startswith("/") == True)
 async def is_command_handler(message: Message):
     await message.answer(text="Вы уже находитесь в другой команде!\n\n"
                               'Если вы хотите выйти из команды, нажмите кнопку "<b>Отмена</b>"\n'
@@ -58,11 +57,6 @@ async def user_not_auth(message: Message):
                               "Нажмите на /start, чтобы авторизоваться")
 
 
-@router_authorise.message(StateFilter(default_state), F.text.startswith("/") == False)
-async def warning_default(message: Message):
-    await message.answer(text="Выберите нужную Вам команду из выпадающего меню")
-
-
 @router_authorise.message(StateFilter(Authorise.fullname), F.text)
 async def process_authorise_command(message: Message, state: FSMContext):
     if len(message.text.split()) == 2:
@@ -87,3 +81,8 @@ async def process_authorise_command(message: Message, state: FSMContext):
 @router_authorise.message(StateFilter(Authorise.fullname))
 async def warning_authorise_command(message: Message):
     await message.answer(text="Пожалуйста, введите Ваше имя и фамилию!")
+
+
+@router_authorise.message(StateFilter(default_state), F.text.startswith("/") == False)
+async def warning_default(message: Message):
+    await message.answer(text="Выберите нужную Вам команду из выпадающего меню")
