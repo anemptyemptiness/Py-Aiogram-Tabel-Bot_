@@ -42,10 +42,13 @@ async def process_place_command(message: Message, state: FSMContext):
 
 @router_finish.message(StateFilter(FSMFinishShift.place), F.text)
 async def process_finish_start_command(message: Message, state: FSMContext):
-    await state.update_data(place=message.text)
-    await message.answer(text="Сколько было посетителей за сегодня? (Пришлите ответ числом)",
-                         reply_markup=await create_cancel_kb())
-    await state.set_state(FSMFinishShift.count_of_visitors)
+    if message.text in config.places:
+        await state.update_data(place=message.text)
+        await message.answer(text="Сколько было посетителей за сегодня? (Пришлите ответ числом)",
+                             reply_markup=await create_cancel_kb())
+        await state.set_state(FSMFinishShift.count_of_visitors)
+    else:
+        await message.answer(text="Выберите рабочую точку ниже из выпадающего списка")
 
 
 @router_finish.message(StateFilter(FSMFinishShift.place))

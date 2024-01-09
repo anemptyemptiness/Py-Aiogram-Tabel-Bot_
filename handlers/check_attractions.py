@@ -6,7 +6,7 @@ from aiogram.fsm.context import FSMContext
 from aiogram.filters import StateFilter, Command
 from aiogram.fsm.state import default_state
 
-import config.config
+from config.config import config
 from lexicon.lexicon_ru import LEXICON_RU
 from fsm.fsm import FSMAttractionsCheck
 from keyboards.keyboards import create_yes_no_kb, create_places_kb, create_cancel_kb
@@ -33,11 +33,13 @@ async def process_place_command(message: Message, state: FSMContext):
 
 @router_attractions.message(StateFilter(FSMAttractionsCheck.place), F.text)
 async def process_bill_acceptor_command(message: Message, state: FSMContext):
-    await state.update_data(place=message.text)
-    await message.answer(text="Все купюроприемники работают?",
-                         reply_markup=await create_yes_no_kb())
-    await state.set_state(FSMAttractionsCheck.bill_acceptor)
-
+    if message.text in config.places:
+        await state.update_data(place=message.text)
+        await message.answer(text="Все купюроприемники работают?",
+                             reply_markup=await create_yes_no_kb())
+        await state.set_state(FSMAttractionsCheck.bill_acceptor)
+    else:
+        await message.answer(text="Выберите рабочую точку ниже из выпадающего списка")
 
 @router_attractions.message(StateFilter(FSMAttractionsCheck.place))
 async def warning_place_command(message: Message):

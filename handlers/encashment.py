@@ -6,7 +6,7 @@ from aiogram.filters import StateFilter, Command
 from aiogram.fsm.context import FSMContext
 from aiogram.fsm.state import default_state
 
-import config.config
+from config.config import config
 from fsm.fsm import FSMEncashment
 from lexicon.lexicon_ru import LEXICON_RU
 from keyboards.keyboards import create_cancel_kb, create_places_kb
@@ -33,11 +33,14 @@ async def process_place_command(message: Message, state: FSMContext):
 
 @router_encashment.message(StateFilter(FSMEncashment.place), F.text)
 async def process_photo_of_check_command(message: Message, state: FSMContext):
-    await state.update_data(place=message.text)
-    await message.answer(text="Пожалуйста, пришлите сюда фото чека инкассации\n\n"
-                              "Если инкассации нет, напишите 0",
-                         reply_markup=await create_cancel_kb())
-    await state.set_state(FSMEncashment.photo_of_check)
+    if message.text in config.places:
+        await state.update_data(place=message.text)
+        await message.answer(text="Пожалуйста, пришлите сюда фото чека инкассации\n\n"
+                                  "Если инкассации нет, напишите 0",
+                             reply_markup=await create_cancel_kb())
+        await state.set_state(FSMEncashment.photo_of_check)
+    else:
+        await message.answer(text="Выберите рабочую точку ниже из выпадающего списка")
 
 
 @router_encashment.message(StateFilter(FSMEncashment.place))

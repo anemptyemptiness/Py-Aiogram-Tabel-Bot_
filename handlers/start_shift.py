@@ -42,14 +42,17 @@ async def process_place_command(message: Message, state: FSMContext):
 
 @router_start_shift.message(StateFilter(FSMStartShift.place), F.text)
 async def process_start_shift_command(message: Message, state: FSMContext, bot: Bot):
-    await state.update_data(place=message.text)
-    message_entity = await message.answer(text="Сохраняю...",
-                                          reply_markup=ReplyKeyboardRemove())
-    await bot.delete_message(chat_id=message_entity.chat.id,
-                             message_id=message_entity.message_id)
-    await message.answer(text=rools,
-                         reply_markup=await create_inline_kb())
-    await state.set_state(FSMStartShift.policy)
+    if message.text in config.places:
+        await state.update_data(place=message.text)
+        message_entity = await message.answer(text="Сохраняю...",
+                                              reply_markup=ReplyKeyboardRemove())
+        await bot.delete_message(chat_id=message_entity.chat.id,
+                                 message_id=message_entity.message_id)
+        await message.answer(text=rools,
+                             reply_markup=await create_inline_kb())
+        await state.set_state(FSMStartShift.policy)
+    else:
+        await message.answer(text="Выберите рабочую точку ниже из выпадающего списка")
 
 
 @router_start_shift.message(StateFilter(FSMStartShift.place))
