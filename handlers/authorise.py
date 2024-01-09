@@ -16,12 +16,6 @@ from db import DB
 router_authorise = Router()
 
 
-@router_authorise.message(isUserAuthFilter())
-async def user_not_auth(message: Message):
-    await message.answer(text="Похоже, пока что Вас нет в базе данных\n\n"
-                              "Нажмите на /start, чтобы авторизоваться")
-
-
 @router_authorise.message(CheckUserFilter(config.admins, config.employees))
 async def warning_user(message: Message):
     await message.answer(text="Вас нет в списке работников данной компании")
@@ -61,6 +55,12 @@ async def process_command_start(message: Message, state: FSMContext):
         await state.set_state(Authorise.fullname)
     else:
         await message.answer(text="Вы уже зарегистрированы в боте!")
+
+
+@router_authorise.message(isUserAuthFilter())
+async def user_not_auth(message: Message):
+    await message.answer(text="Похоже, пока что Вас нет в базе данных\n\n"
+                              "Нажмите на /start, чтобы авторизоваться")
 
 
 @router_authorise.message(StateFilter(Authorise.fullname), F.text)
