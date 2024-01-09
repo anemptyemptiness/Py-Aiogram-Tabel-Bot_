@@ -15,7 +15,7 @@ from db import DB
 router_authorise = Router()
 
 
-@router_authorise.message(StateFilter(~default_state), isCommandFilter())
+@router_authorise.message(~StateFilter(default_state), isCommandFilter())
 async def is_command_handler(message: Message):
     await message.answer(text="Вы попробовали ввести команду, находясь в другой команде!")
 
