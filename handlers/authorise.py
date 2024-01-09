@@ -41,11 +41,6 @@ async def process_cancel_in_states_command(message: Message, state: FSMContext):
                          reply_markup=ReplyKeyboardRemove())
 
 
-@router_authorise.message(StateFilter(default_state), F.text.startswith("/") == False)
-async def warning_default(message: Message):
-    await message.answer(text="Выберите нужную Вам команду из выпадающего меню")
-
-
 @router_authorise.message(Command(commands="start"), StateFilter(default_state))
 async def process_command_start(message: Message, state: FSMContext):
     if not DB.user_exists(message.from_user.id):
@@ -61,6 +56,11 @@ async def process_command_start(message: Message, state: FSMContext):
 async def user_not_auth(message: Message):
     await message.answer(text="Похоже, пока что Вас нет в базе данных\n\n"
                               "Нажмите на /start, чтобы авторизоваться")
+
+
+@router_authorise.message(StateFilter(default_state), F.text.startswith("/") == False)
+async def warning_default(message: Message):
+    await message.answer(text="Выберите нужную Вам команду из выпадающего меню")
 
 
 @router_authorise.message(StateFilter(Authorise.fullname), F.text)
