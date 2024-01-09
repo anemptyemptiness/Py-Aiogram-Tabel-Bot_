@@ -76,13 +76,13 @@ class DataBase:
             cursor.close()
             connect.close()
 
-    def set_data(self, user_id: int, date: str, place: str, count: int) -> None:
+    def set_data(self, user_id: int, date: str, place: str, count: int, cash) -> None:
         connect = self.connect_to_db()
         cursor = connect.cursor()
 
         try:
-            cursor.execute("INSERT INTO visitors (user_id, date, place, count) "
-                           f"VALUES ({user_id}, '{date}', '{place}', {count});")
+            cursor.execute("INSERT INTO visitors (user_id, date, place, count, cash) "
+                           f"VALUES ({user_id}, '{date}', '{place}', {count}, {cash});")
             connect.commit()
         except Exception as e:
             print("Error with INSERT:", e)
@@ -115,7 +115,7 @@ class DataBase:
         cursor = connect.cursor()
 
         try:
-            cursor.execute("SELECT v.place, u.fullname, v.user_id, SUM(v.cash) "
+            cursor.execute("SELECT v.place, u.fullname, v.user_id, concat(SUM(v.cash::numeric)) "
                            "FROM visitors AS v, users AS u "
                            f"WHERE v.date BETWEEN '{date_from}' AND '{date_to}' "
                            "AND u.user_id = v.user_id "
@@ -135,7 +135,7 @@ class DataBase:
         cursor = connect.cursor()
 
         try:
-            cursor.execute("SELECT SUM(v.cash) "
+            cursor.execute("SELECT concat(SUM(v.cash::numeric)) "
                            "FROM visitors AS v "
                            f"WHERE v.date BETWEEN '{date_from}' AND '{date_to}';")
             money = cursor.fetchone()

@@ -13,6 +13,9 @@ from keyboards.keyboards import create_cancel_kb, create_yes_no_kb, create_place
 from middlewares.album_middleware import AlbumsMiddleware
 from config.config import place_chat, config
 
+from decimal import Decimal
+import re
+
 router_finish = Router()
 router_finish.message.middleware(middleware=AlbumsMiddleware(2))
 
@@ -109,7 +112,15 @@ async def process_photo_of_beneficiaries_command(message: Message, state: FSMCon
 
 @router_finish.message(StateFilter(FSMFinishShift.summary), F.text)
 async def process_summary_command(message: Message, state: FSMContext):
-    await state.update_data(summary=message.text)
+    money_message = message.text.lower()
+    pattern = r'\b\w*рубл[ьяей]?\w*\b'
+
+    if "," in message.text:
+        money_message = message.text.replace(",", ".")
+
+    money_message = re.sub(pattern, '', money_message)
+
+    await state.update_data(summary=str(Decimal(money_message)))
     await message.answer(text="Введите сумму наличных за сегодня",
                          reply_markup=await create_cancel_kb())
     await state.set_state(FSMFinishShift.cash)
@@ -282,7 +293,8 @@ async def process_charge_video_command(message: Message, state: FSMContext):
                 user_id=message.from_user.id,
                 date=datetime.now(tz=timezone(timedelta(hours=3.0))).strftime("%d.%m.%Y"),
                 place=finish_shift_dict['place'],
-                count=finish_shift_dict['visitors']
+                count=finish_shift_dict['visitors'],
+                cash=finish_shift_dict['summary'],
             )
 
             await message.answer(text="Отлично! Формирую отчёт...\nОтправляю начальству!",
