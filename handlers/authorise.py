@@ -52,7 +52,7 @@ async def process_command_start(message: Message, state: FSMContext):
         await message.answer(text="Вы уже зарегистрированы в боте!")
 
 
-@router_authorise.message(isUserAuthFilter())
+@router_authorise.message(StateFilter(default_state), isUserAuthFilter())
 async def user_not_auth(message: Message):
     await message.answer(text="Похоже, пока что Вас нет в базе данных\n\n"
                               "Нажмите на /start, чтобы авторизоваться")
