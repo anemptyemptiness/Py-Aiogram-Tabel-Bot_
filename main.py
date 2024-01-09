@@ -12,7 +12,7 @@ from lexicon.lexicon_ru import warning
 from aiogram.fsm.storage.redis import RedisStorage
 from aiogram import Bot, Dispatcher
 
-logging.basicConfig(level=logging.DEBUG)
+logging.basicConfig(level=logging.INFO)
 
 bot = Bot(token=config.tg_bot.token)
 storage = RedisStorage(redis=config.redis)
