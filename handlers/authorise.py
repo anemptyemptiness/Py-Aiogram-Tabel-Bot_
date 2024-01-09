@@ -17,7 +17,10 @@ router_authorise = Router()
 
 @router_authorise.message(~StateFilter(default_state), isCommandFilter())
 async def is_command_handler(message: Message):
-    await message.answer(text="Вы попробовали ввести команду, находясь в другой команде!")
+    await message.answer(text="Вы уже находитесь в другой команде!\n\n"
+                              'Если вы хотите выйти из команды, нажмите кнопку "<b>Отмена</b>"\n'
+                              'или напишите "<b>Отмена</b>" в чат',
+                         parse_mode="html")
 
 
 @router_authorise.message(~StateFilter(default_state), F.text == "Отмена")
