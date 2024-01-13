@@ -37,7 +37,7 @@ async def report_visitors_in_range(date_from: str, date_to: str, msg: Message):
 
             for i in range(count):
                 report += f"📝Работник: <em>{rows[index_rows][1]}</em>\n└"
-                report += f"посетителей: <em>{rows[index_rows][3]}</em>\n\n"
+                report += f"посетителей: <em>{rows[index_rows][3]}</em>\n"
 
                 index_rows += 1
 
