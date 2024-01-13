@@ -121,7 +121,7 @@ async def get_stats_week(callback: CallbackQuery, bot: Bot):
 
         time.sleep(0.5)
 
-        await report_visitors_in_range(date_from.strftime("%Y.%m.%d"), date_to.strftime("%Y.%m.%d"), callback.message)
+        await report_visitors_in_range(date_from.strftime("%d.%m.%Y"), date_to.strftime("%d.%m.%Y"), callback.message)
     except Exception as e:
         await callback.message.bot.send_message(text=f"Get stats-visitors last week error: {e}\n"
                                                      f"User_id: {callback.message.from_user.id}",
@@ -147,7 +147,7 @@ async def get_stats_month(callback: CallbackQuery, bot: Bot):
 
         time.sleep(0.5)
 
-        await report_visitors_in_range(date_from.strftime("%Y.%m.%d"), date_to.strftime("%Y.%m.%d"), callback.message)
+        await report_visitors_in_range(date_from.strftime("%d.%m.%Y"), date_to.strftime("%d.%m.%Y"), callback.message)
     except Exception as e:
         await callback.message.bot.send_message(text=f"Get stats-visitors last month error: {e}\n"
                                                      f"User_id: {callback.message.from_user.id}",
@@ -173,7 +173,7 @@ async def get_stats_year(callback: CallbackQuery, bot: Bot):
 
         time.sleep(0.5)
 
-        await report_visitors_in_range(date_from.strftime("%Y.%m.%d"), date_to.strftime("%Y.%m.%d"), callback.message)
+        await report_visitors_in_range(date_from.strftime("%d.%m.%Y"), date_to.strftime("%d.%m.%Y"), callback.message)
     except Exception as e:
         await callback.message.bot.send_message(text=f"Get stats-visitors last year error: {e}\n"
                                                      f"User_id: {callback.message.from_user.id}",
@@ -185,7 +185,7 @@ async def get_stats_year(callback: CallbackQuery, bot: Bot):
 
 
 @router_adm.callback_query(isAdminFilter(config.admins), StateFilter(FSMAdmin.visitors), F.data == "by_hand")
-async def prepare_for_get_stats_by_hand(callback: CallbackQuery, state: FSMContext, bot: Bot):
+async def prepare_for_get_stats_visit_by_hand(callback: CallbackQuery, state: FSMContext, bot: Bot):
     await state.set_state(FSMAdmin.visitors_by_hand)
     await callback.answer(text="👌🏻")
     await bot.delete_message(
@@ -198,9 +198,11 @@ async def prepare_for_get_stats_by_hand(callback: CallbackQuery, state: FSMConte
 
 
 @router_adm.message(isAdminFilter(config.admins), StateFilter(FSMAdmin.visitors_by_hand), F.text)
-async def get_stats_by_hand(message: Message, bot: Bot):
+async def get_stats_visit_by_hand(message: Message, bot: Bot):
     try:
         date_from, date_to = message.text.split()
+        day_from, month_from, year_from = date_from.split(".")
+        day_to, month_to, year_to = date_to.split(".")
 
         await bot.delete_message(
             chat_id=message.from_user.id,
@@ -212,7 +214,9 @@ async def get_stats_by_hand(message: Message, bot: Bot):
             message_id=message.message_id - 1,
         )
 
-        await report_visitors_in_range(date_from, date_to, message)
+        await report_visitors_in_range(f"{year_from}.{month_from}.{day_from}",
+                                       f"{year_to}.{month_to}.{day_to}",
+                                       message)
     except Exception as e:
         await message.bot.send_message(text=f"Get stats-visitors by hand error: {e}\n"
                                             f"User_id: {message.from_user.id}",
@@ -258,7 +262,7 @@ async def get_stats_week_money(callback: CallbackQuery, bot: Bot):
 
         time.sleep(0.5)
 
-        await report_money_in_range(date_from.strftime("%Y.%m.%d"), date_to.strftime("%Y.%m.%d"), callback.message)
+        await report_money_in_range(date_from.strftime("%d.%m.%Y"), date_to.strftime("%d.%m.%Y"), callback.message)
     except Exception as e:
         await callback.message.bot.send_message(text=f"Get stats-money last week error: {e}\n"
                                                      f"User_id: {callback.message.from_user.id}",
@@ -284,7 +288,7 @@ async def get_stats_month_money(callback: CallbackQuery, bot: Bot):
 
         time.sleep(0.5)
 
-        await report_money_in_range(date_from.strftime("%Y.%m.%d"), date_to.strftime("%Y.%m.%d"), callback.message)
+        await report_money_in_range(date_from.strftime("%d.%m.%Y"), date_to.strftime("%d.%m.%Y"), callback.message)
     except Exception as e:
         await callback.message.bot.send_message(text=f"Get stats-money last month error: {e}\n"
                                                      f"User_id: {callback.message.from_user.id}",
@@ -310,7 +314,7 @@ async def get_stats_year_money(callback: CallbackQuery, bot: Bot):
 
         time.sleep(0.5)
 
-        await report_money_in_range(date_from.strftime("%Y.%m.%d"), date_to.strftime("%Y.%m.%d"), callback.message)
+        await report_money_in_range(date_from.strftime("%d.%m.%Y"), date_to.strftime("%d.%m.%Y"), callback.message)
     except Exception as e:
         await callback.message.bot.send_message(text=f"Get stats-money last year error: {e}\n"
                                                      f"User_id: {callback.message.from_user.id}",
@@ -335,9 +339,11 @@ async def prepare_for_get_stats_money_by_hand(callback: CallbackQuery, state: FS
 
 
 @router_adm.message(isAdminFilter(config.admins), StateFilter(FSMAdmin.money_by_hand), F.text)
-async def get_stats_by_hand(message: Message, bot: Bot):
+async def get_stats_money_by_hand(message: Message, bot: Bot):
     try:
         date_from, date_to = message.text.split()
+        day_from, month_from, year_from = date_from.split(".")
+        day_to, month_to, year_to = date_to.split(".")
 
         await bot.delete_message(
             chat_id=message.from_user.id,
@@ -349,7 +355,8 @@ async def get_stats_by_hand(message: Message, bot: Bot):
             message_id=message.message_id - 1,
         )
 
-        await report_money_in_range(date_from, date_to, message)
+        await report_money_in_range(f"{year_from}.{month_from}.{day_from}",
+                                    f"{year_to}.{month_to}.{day_to}", message)
     except Exception as e:
         await message.bot.send_message(text=f"Get stats-money by hand error: {e}\n"
                                             f"User_id: {message.from_user.id}",
@@ -361,7 +368,7 @@ async def get_stats_by_hand(message: Message, bot: Bot):
 
 
 @router_adm.message(isAdminFilter(config.admins), StateFilter(FSMAdmin.money_by_hand))
-async def warning_get_stats_by_hand(message: Message):
+async def warning_get_stats_money_by_hand(message: Message):
     await message.answer(
         text="⏳Введите диапазон дат <b>через пробел</b>\n\n"
              "Например: <em>31.12.2023 06.01.2024</em>",
@@ -374,7 +381,7 @@ async def warning_get_stats_by_hand(message: Message):
     ~StateFilter(default_state),
     F.data == "back"
 )
-async def adm_visitors_back_command(callback: CallbackQuery, state: FSMContext, bot: Bot):
+async def adm_back_command(callback: CallbackQuery, state: FSMContext, bot: Bot):
     await state.set_state(FSMAdmin.stats)
     await callback.answer(text="👌🏻")
     await bot.delete_message(
