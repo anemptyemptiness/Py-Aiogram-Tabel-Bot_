@@ -31,18 +31,18 @@ async def report_visitors_in_range(date_from: str, date_to: str, msg: Message):
     index_place = 0
     index_rows = 0
 
-    for count in places.values():
-        if count:
+    for key in sorted(places.keys()):
+        if places[key]:
             report += f"Рабочая точка: <b>{rows[index_place][0]}</b>\n"
 
-            for i in range(count):
+            for i in range(places[key]):
                 report += f"📝Работник: <em>{rows[index_rows][1]}</em>\n└"
                 report += f"посетителей: <em>{rows[index_rows][3]}</em>\n"
 
                 index_rows += 1
 
             report += "\n"
-            index_place += count
+            index_place += places[key]
 
     await msg.answer(
         text=report,
@@ -65,18 +65,18 @@ async def report_money_in_range(date_from: str, date_to: str, msg: Message):
     index_place = 0
     index_rows = 0
 
-    for count in places.values():
-        if count:
+    for key in sorted(places.keys()):
+        if places[key]:
             report += f"Рабочая точка: <b>{rows[index_place][0]}</b>\n"
 
-            for i in range(count):
+            for i in range(places[key]):
                 report += f"📝Работник: <em>{rows[index_rows][1]}</em>\n└"
-                report += f"выручка: <em>{rows[index_rows][3]}</em> <b>₽</b>\n\n"
+                report += f"выручка: <em>{rows[index_rows][3]}</em> <b>₽</b>\n"
 
                 index_rows += 1
 
             report += "\n"
-            index_place += count
+            index_place += places[key]
 
     total_money = DB.get_total_money(date_from=date_from, date_to=date_to)
 
@@ -121,7 +121,7 @@ async def get_stats_week(callback: CallbackQuery, bot: Bot):
 
         time.sleep(0.5)
 
-        await report_visitors_in_range(date_from.strftime("%Y.%m.%d"), date_to.strftime("%Y.%m.%d"), callback.message)
+        await report_visitors_in_range(date_from.strftime("%d.%m.%Y"), date_to.strftime("%d.%m.%Y"), callback.message)
     except Exception as e:
         await callback.message.bot.send_message(text=f"Get stats-visitors last week error: {e}\n"
                                                      f"User_id: {callback.message.from_user.id}",
@@ -147,7 +147,7 @@ async def get_stats_month(callback: CallbackQuery, bot: Bot):
 
         time.sleep(0.5)
 
-        await report_visitors_in_range(date_from.strftime("%Y.%m.%d"), date_to.strftime("%Y.%m.%d"), callback.message)
+        await report_visitors_in_range(date_from.strftime("%d.%m.%Y"), date_to.strftime("%d.%m.%Y"), callback.message)
     except Exception as e:
         await callback.message.bot.send_message(text=f"Get stats-visitors last month error: {e}\n"
                                                      f"User_id: {callback.message.from_user.id}",
@@ -173,7 +173,7 @@ async def get_stats_year(callback: CallbackQuery, bot: Bot):
 
         time.sleep(0.5)
 
-        await report_visitors_in_range(date_from.strftime("%Y.%m.%d"), date_to.strftime("%Y.%m.%d"), callback.message)
+        await report_visitors_in_range(date_from.strftime("%d.%m.%Y"), date_to.strftime("%d.%m.%Y"), callback.message)
     except Exception as e:
         await callback.message.bot.send_message(text=f"Get stats-visitors last year error: {e}\n"
                                                      f"User_id: {callback.message.from_user.id}",
@@ -258,7 +258,7 @@ async def get_stats_week_money(callback: CallbackQuery, bot: Bot):
 
         time.sleep(0.5)
 
-        await report_money_in_range(date_from.strftime("%Y.%m.%d"), date_to.strftime("%Y.%m.%d"), callback.message)
+        await report_money_in_range(date_from.strftime("%d.%m.%Y"), date_to.strftime("%d.%m.%Y"), callback.message)
     except Exception as e:
         await callback.message.bot.send_message(text=f"Get stats-money last week error: {e}\n"
                                                      f"User_id: {callback.message.from_user.id}",
@@ -284,7 +284,7 @@ async def get_stats_month_money(callback: CallbackQuery, bot: Bot):
 
         time.sleep(0.5)
 
-        await report_money_in_range(date_from.strftime("%Y.%m.%d"), date_to.strftime("%Y.%m.%d"), callback.message)
+        await report_money_in_range(date_from.strftime("%d.%m.%Y"), date_to.strftime("%d.%m.%Y"), callback.message)
     except Exception as e:
         await callback.message.bot.send_message(text=f"Get stats-money last month error: {e}\n"
                                                      f"User_id: {callback.message.from_user.id}",
@@ -310,7 +310,7 @@ async def get_stats_year_money(callback: CallbackQuery, bot: Bot):
 
         time.sleep(0.5)
 
-        await report_money_in_range(date_from.strftime("%Y.%m.%d"), date_to.strftime("%Y.%m.%d"), callback.message)
+        await report_money_in_range(date_from.strftime("%d.%m.%Y"), date_to.strftime("%d.%m.%Y"), callback.message)
     except Exception as e:
         await callback.message.bot.send_message(text=f"Get stats-money last year error: {e}\n"
                                                      f"User_id: {callback.message.from_user.id}",
