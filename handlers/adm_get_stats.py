@@ -5,6 +5,7 @@ from aiogram.types import Message, CallbackQuery
 from aiogram import Router, F, Bot
 from aiogram.filters import Command, StateFilter
 from aiogram.fsm.context import FSMContext
+from aiogram.fsm.state import default_state
 
 from db import DB
 from fsm.fsm import FSMAdmin
@@ -16,7 +17,12 @@ router_adm = Router()
 
 
 async def report_visitors_in_range(date_from: str, date_to: str, msg: Message):
-    rows = DB.get_statistics_visitors(date_from=date_from, date_to=date_to)
+    try:
+        rows = DB.get_statistics_visitors(date_from=date_from, date_to=date_to)
+    except Exception as e:
+        date_to -= timedelta(days=1)
+        rows = DB.get_statistics_visitors(date_from=date_from, date_to=date_to)
+
     places = {
         "Белая Дача": sum([row[0].count("Белая Дача") for row in rows]),
         "Ривьера": sum([row[0].count("Ривьера") for row in rows]),
@@ -24,6 +30,8 @@ async def report_visitors_in_range(date_from: str, date_to: str, msg: Message):
         "Вегас Кунцево": sum([row[0].count("Вегас Кунцево") for row in rows]),
         "Щелковский": sum([row[0].count("Щелковский") for row in rows]),
     }
+
+    print(places)
 
     report = f"📊Статистика по посетителям точек\n<b>от</b> {date_from} <b>до</b> {date_to}\n\n"
     index_place = 0
@@ -369,23 +377,7 @@ async def warning_get_stats_by_hand(message: Message):
 
 @router_adm.callback_query(
     isAdminFilter(config.admins),
-    StateFilter(FSMAdmin.visitors),
-    F.data == "back"
-)
-async def adm_visitors_back_command(callback: CallbackQuery, state: FSMContext, bot: Bot):
-    await state.set_state(FSMAdmin.stats)
-    await callback.answer(text="👌🏻")
-    await bot.delete_message(
-        chat_id=callback.message.chat.id,
-        message_id=callback.message.message_id,
-    )
-    await callback.message.answer(text="⏳Выберите нужную кнопку снизу",
-                                  reply_markup=await create_money_or_visitors_kb())
-
-
-@router_adm.callback_query(
-    isAdminFilter(config.admins),
-    StateFilter(FSMAdmin.money),
+    ~StateFilter(default_state),
     F.data == "back"
 )
 async def adm_visitors_back_command(callback: CallbackQuery, state: FSMContext, bot: Bot):
