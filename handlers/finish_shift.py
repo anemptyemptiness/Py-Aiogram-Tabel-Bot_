@@ -291,7 +291,7 @@ async def process_charge_video_command(message: Message, state: FSMContext):
 
             db.DB.set_data(
                 user_id=message.from_user.id,
-                date=datetime.now(tz=timezone(timedelta(hours=3.0))).strftime("%d.%m.%Y"),
+                date=datetime.now(tz=timezone(timedelta(hours=3.0))).strftime("%Y.%m.%d"),
                 place=finish_shift_dict['place'],
                 count=finish_shift_dict['visitors'],
                 cash=finish_shift_dict['summary'],

@@ -17,11 +17,7 @@ router_adm = Router()
 
 
 async def report_visitors_in_range(date_from: str, date_to: str, msg: Message):
-    try:
-        rows = DB.get_statistics_visitors(date_from=date_from, date_to=date_to)
-    except Exception as e:
-        date_to -= timedelta(days=1)
-        rows = DB.get_statistics_visitors(date_from=date_from, date_to=date_to)
+    rows = DB.get_statistics_visitors(date_from=date_from, date_to=date_to)
 
     places = {
         "Белая Дача": sum([row[0].count("Белая Дача") for row in rows]),
@@ -30,8 +26,6 @@ async def report_visitors_in_range(date_from: str, date_to: str, msg: Message):
         "Вегас Кунцево": sum([row[0].count("Вегас Кунцево") for row in rows]),
         "Щелковский": sum([row[0].count("Щелковский") for row in rows]),
     }
-
-    print(places)
 
     report = f"📊Статистика по посетителям точек\n<b>от</b> {date_from} <b>до</b> {date_to}\n\n"
     index_place = 0
