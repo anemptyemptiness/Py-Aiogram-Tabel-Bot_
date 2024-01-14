@@ -18,6 +18,9 @@ router_adm = Router()
 async def report_visitors_in_range(date_from: str, date_to: str, msg: Message):
     rows = DB.get_statistics_visitors(date_from=date_from, date_to=date_to)
 
+    year_from, month_from, day_from = date_from.split(".")
+    year_to, month_to, day_to = date_to.split(".")
+
     places = {
         "Белая Дача": sum([row[0].count("Белая Дача") for row in rows]),
         "Ривьера": sum([row[0].count("Ривьера") for row in rows]),
@@ -26,7 +29,8 @@ async def report_visitors_in_range(date_from: str, date_to: str, msg: Message):
         "Щелковский": sum([row[0].count("Щелковский") for row in rows]),
     }
 
-    report = f"📊Статистика по посетителям точек\n<b>от</b> {date_from} <b>до</b> {date_to}\n\n"
+    report = f"📊Статистика по посетителям точек\n<b>от</b> {day_from}.{month_from}.{year_from}" \
+             f" <b>до</b> {day_to}.{month_to}.{year_to}\n\n"
     index_place = 0
     index_rows = 0
 
@@ -52,6 +56,10 @@ async def report_visitors_in_range(date_from: str, date_to: str, msg: Message):
 
 async def report_money_in_range(date_from: str, date_to: str, msg: Message):
     rows = DB.get_statistics_money(date_from=date_from, date_to=date_to)
+
+    year_from, month_from, day_from = date_from.split(".")
+    year_to, month_to, day_to = date_to.split(".")
+
     places = {
         "Белая Дача": sum([row[0].count("Белая Дача") for row in rows]),
         "Ривьера": sum([row[0].count("Ривьера") for row in rows]),
@@ -60,7 +68,8 @@ async def report_money_in_range(date_from: str, date_to: str, msg: Message):
         "Щелковский": sum([row[0].count("Щелковский") for row in rows]),
     }
 
-    report = f"📊Статистика по приходу финансов на точках\n<b>от</b> {date_from} <b>до</b> {date_to}\n\n"
+    report = f"📊Статистика по приходу финансов на точках\n<b>от</b> {day_from}.{month_from}.{year_from}" \
+             f" <b>до</b> {day_to}.{month_to}.{year_to}\n\n"
     index_place = 0
     index_rows = 0
 
@@ -253,7 +262,7 @@ async def get_stats_week_money(callback: CallbackQuery, bot: Bot):
             message_id=callback.message.message_id
         )
 
-        await report_money_in_range(date_from.strftime("%d.%m.%Y"), date_to.strftime("%d.%m.%Y"), callback.message)
+        await report_money_in_range(date_from.strftime("%Y.%m.%d"), date_to.strftime("%Y.%m.%d"), callback.message)
     except Exception as e:
         await callback.message.bot.send_message(text=f"Get stats-money last week error: {e}\n"
                                                      f"User_id: {callback.message.from_user.id}",
@@ -277,7 +286,7 @@ async def get_stats_month_money(callback: CallbackQuery, bot: Bot):
             message_id=callback.message.message_id
         )
 
-        await report_money_in_range(date_from.strftime("%d.%m.%Y"), date_to.strftime("%d.%m.%Y"), callback.message)
+        await report_money_in_range(date_from.strftime("%Y.%m.%d"), date_to.strftime("%Y.%m.%d"), callback.message)
     except Exception as e:
         await callback.message.bot.send_message(text=f"Get stats-money last month error: {e}\n"
                                                      f"User_id: {callback.message.from_user.id}",
@@ -301,7 +310,7 @@ async def get_stats_year_money(callback: CallbackQuery, bot: Bot):
             message_id=callback.message.message_id
         )
 
-        await report_money_in_range(date_from.strftime("%d.%m.%Y"), date_to.strftime("%d.%m.%Y"), callback.message)
+        await report_money_in_range(date_from.strftime("%Y.%m.%d"), date_to.strftime("%Y.%m.%d"), callback.message)
     except Exception as e:
         await callback.message.bot.send_message(text=f"Get stats-money last year error: {e}\n"
                                                      f"User_id: {callback.message.from_user.id}",
