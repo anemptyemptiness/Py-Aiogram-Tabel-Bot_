@@ -1,5 +1,4 @@
 from datetime import datetime, timezone, timedelta
-import time
 
 from aiogram.types import Message, CallbackQuery
 from aiogram import Router, F, Bot
@@ -119,9 +118,7 @@ async def get_stats_week(callback: CallbackQuery, bot: Bot):
             message_id=callback.message.message_id
         )
 
-        time.sleep(0.5)
-
-        await report_visitors_in_range(date_from.strftime("%d.%m.%Y"), date_to.strftime("%d.%m.%Y"), callback.message)
+        await report_visitors_in_range(date_from.strftime("%Y.%m.%d"), date_to.strftime("%Y.%m.%d"), callback.message)
     except Exception as e:
         await callback.message.bot.send_message(text=f"Get stats-visitors last week error: {e}\n"
                                                      f"User_id: {callback.message.from_user.id}",
@@ -145,9 +142,7 @@ async def get_stats_month(callback: CallbackQuery, bot: Bot):
             message_id=callback.message.message_id
         )
 
-        time.sleep(0.5)
-
-        await report_visitors_in_range(date_from.strftime("%d.%m.%Y"), date_to.strftime("%d.%m.%Y"), callback.message)
+        await report_visitors_in_range(date_from.strftime("%Y.%m.%d"), date_to.strftime("%Y.%m.%d"), callback.message)
     except Exception as e:
         await callback.message.bot.send_message(text=f"Get stats-visitors last month error: {e}\n"
                                                      f"User_id: {callback.message.from_user.id}",
@@ -171,9 +166,7 @@ async def get_stats_year(callback: CallbackQuery, bot: Bot):
             message_id=callback.message.message_id
         )
 
-        time.sleep(0.5)
-
-        await report_visitors_in_range(date_from.strftime("%d.%m.%Y"), date_to.strftime("%d.%m.%Y"), callback.message)
+        await report_visitors_in_range(date_from.strftime("%Y.%m.%d"), date_to.strftime("%Y.%m.%d"), callback.message)
     except Exception as e:
         await callback.message.bot.send_message(text=f"Get stats-visitors last year error: {e}\n"
                                                      f"User_id: {callback.message.from_user.id}",
@@ -260,8 +253,6 @@ async def get_stats_week_money(callback: CallbackQuery, bot: Bot):
             message_id=callback.message.message_id
         )
 
-        time.sleep(0.5)
-
         await report_money_in_range(date_from.strftime("%d.%m.%Y"), date_to.strftime("%d.%m.%Y"), callback.message)
     except Exception as e:
         await callback.message.bot.send_message(text=f"Get stats-money last week error: {e}\n"
@@ -286,8 +277,6 @@ async def get_stats_month_money(callback: CallbackQuery, bot: Bot):
             message_id=callback.message.message_id
         )
 
-        time.sleep(0.5)
-
         await report_money_in_range(date_from.strftime("%d.%m.%Y"), date_to.strftime("%d.%m.%Y"), callback.message)
     except Exception as e:
         await callback.message.bot.send_message(text=f"Get stats-money last month error: {e}\n"
@@ -311,8 +300,6 @@ async def get_stats_year_money(callback: CallbackQuery, bot: Bot):
             chat_id=callback.message.chat.id,
             message_id=callback.message.message_id
         )
-
-        time.sleep(0.5)
 
         await report_money_in_range(date_from.strftime("%d.%m.%Y"), date_to.strftime("%d.%m.%Y"), callback.message)
     except Exception as e:
