@@ -11,7 +11,7 @@ from aiogram.fsm.context import FSMContext
 from fsm.fsm import FSMStartShift
 from keyboards.keyboards import create_yes_no_kb, create_cancel_kb, create_places_kb, create_inline_kb, create_names_kb
 from middlewares.album_middleware import AlbumsMiddleware
-from lexicon.lexicon_ru import LEXICON_RU, rools
+from lexicon.lexicon_ru import LEXICON_RU, rules
 from config.config import config, place_chat
 from db import DB
 
@@ -48,8 +48,9 @@ async def process_start_shift_command(message: Message, state: FSMContext, bot: 
                                               reply_markup=ReplyKeyboardRemove())
         await bot.delete_message(chat_id=message_entity.chat.id,
                                  message_id=message_entity.message_id)
-        await message.answer(text=rools,
-                             reply_markup=await create_inline_kb())
+        await message.answer(text=rules,
+                             reply_markup=await create_inline_kb(),
+                             parse_mode="html",)
         await state.set_state(FSMStartShift.policy)
     else:
         await message.answer(text="Выберите рабочую точку ниже из выпадающего списка")
@@ -65,9 +66,6 @@ async def warning_place_command(message: Message):
 async def process_policy_command(callback: CallbackQuery, state: FSMContext, bot: Bot):
     await state.update_data(policy="agree")
     await callback.answer(text="✅")
-
-    time.sleep(1)
-
     await bot.delete_message(chat_id=callback.message.chat.id,
                              message_id=callback.message.message_id)
     await callback.message.answer(text="Пожалуйста, отправьте Ваше фото на рабочем месте")
