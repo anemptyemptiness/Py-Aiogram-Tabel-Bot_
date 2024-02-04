@@ -20,7 +20,8 @@ router_start_shift.message.middleware(middleware=AlbumsMiddleware(2))
 
 
 async def report(dictionary: Dict[str, Any], date: str, user_id: Union[str, int]) -> str:
-    return f"Дата: {date}\n" \
+    return "📝Открытие смены:\n\n" \
+           f"Дата: {date}\n" \
            f"Точка: {dictionary['place']}\n" \
            f"Имя: {DB.get_current_name(user_id=user_id)}\n" \
            f"Фото сотрудника: фото_1\n" \

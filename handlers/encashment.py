@@ -18,7 +18,8 @@ router_encashment.message.middleware(middleware=AlbumsMiddleware(2))
 
 
 async def report(dictionary: dict, date):
-    return f"Точка: {dictionary['place']}\n" \
+    return "📝Инкассация:\n\n"\
+           f"Точка: {dictionary['place']}\n" \
            f"Дата: {date}\n\n" \
            f"Дата инкассации: {dictionary['date']}\n" \
            f"Сумма инкассации: {dictionary['summary']}\n"

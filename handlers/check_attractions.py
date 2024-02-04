@@ -16,7 +16,8 @@ router_attractions = Router()
 
 
 async def report(dictionary: dict, date) -> str:
-    return f"Дата: {date}\n" \
+    return "📝Проверка аттракционов:\n\n" \
+           f"Дата: {date}\n" \
            f"Точка: {dictionary['place']}\n\n" \
            f"Купюроприемники рабочие: {dictionary['bill_acceptors']}\n\n" \
            f"Номера нерабочих купюроприемников: <em>{dictionary['defects_on_bill_acceptors'] if dictionary['bill_acceptors'] == 'no' else 'None'}</em>\n\n" \

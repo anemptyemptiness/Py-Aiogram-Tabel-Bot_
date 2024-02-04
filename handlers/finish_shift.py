@@ -21,7 +21,8 @@ router_finish.message.middleware(middleware=AlbumsMiddleware(2))
 
 
 async def report(dictionary: dict, date) -> str:
-    return f"Дата: {date}\n" \
+    return "📝Закрытие смены:\n\n"\
+           f"Дата: {date}\n" \
            f"Точка: {dictionary['place']}\n" \
            f"Имя: {dictionary['name']}\n" \
            f"Количество посетителей: {dictionary['visitors']}\n\n" \
