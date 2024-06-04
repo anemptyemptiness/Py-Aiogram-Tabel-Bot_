@@ -1,4 +1,4 @@
 .env
-venv_maksim
+venv
 *.pyc
 .idea
