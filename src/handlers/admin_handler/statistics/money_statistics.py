@@ -20,6 +20,8 @@ async def get_report_revenue_by_date(
         date_to: date
 ):
     places = dict()
+    summary: int = 0
+
     data = await AsyncOrm.get_revenue_data_from_reports_by_date(
         date_from=date_from,
         date_to=date_to,
@@ -39,7 +41,10 @@ async def get_report_revenue_by_date(
                 report += f"📝Работник: <em>{fullname}</em>\n└"
                 report += f"выручка: <em>{revenue}<b>₽</b></em>\n"
 
+                summary += int(revenue)
             report += "\n"
+
+    report += f"\n<b>Итого:</b> <em>{summary}<b>₽</b></em>"
 
     return report
 
