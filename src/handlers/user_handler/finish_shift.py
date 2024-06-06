@@ -103,8 +103,23 @@ async def send_report(message: Message, state: FSMContext, data: dict, date: str
             text="Отлично! Формирую отчёт...\nОтправляю начальству!",
             reply_markup=ReplyKeyboardRemove(),
         )
+        await message.answer(
+            text="Вы вернулись в главное меню",
+        )
+    except Exception as e:
+        logger.exception("Ошибка не с телеграм в finish_shift.py")
+        await message.bot.send_message(
+            text=f"Finish shift report error: {e}\n"
+                 f"User_id: {message.from_user.id}",
+            chat_id=settings.ADMIN_ID,
+            reply_markup=ReplyKeyboardRemove(),
+        )
+        await message.answer(
+            text="Упс... что-то пошло не так, сообщите руководству!",
+            reply_markup=ReplyKeyboardRemove(),
+        )
     except TelegramAPIError as e:
-        logger.exception("Ошибка в finish_shift.py")
+        logger.exception("Ошибка с телеграм в finish_shift.py")
         await message.bot.send_message(
             text=f"Finish shift report error: {e}\n"
                  f"User_id: {message.from_user.id}",

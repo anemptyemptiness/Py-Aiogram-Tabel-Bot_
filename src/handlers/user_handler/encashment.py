@@ -60,8 +60,23 @@ async def send_report(message: Message, state: FSMContext, data: dict, date: str
             text="Отлично, все данные отправлены начальству!",
             reply_markup=ReplyKeyboardRemove(),
         )
+        await message.answer(
+            text="Вы вернулись в главное меню",
+        )
+    except Exception as e:
+        logger.exception("Ошибка не с телеграм в encashment.py")
+        await message.bot.send_message(
+            text=f"Encashment report error: {e}\n"
+                 f"User_id: {message.from_user.id}",
+            chat_id=settings.ADMIN_ID,
+            reply_markup=ReplyKeyboardRemove(),
+        )
+        await message.answer(
+            text="Упс... что-то пошло не так, сообщите руководству!",
+            reply_markup=ReplyKeyboardRemove(),
+        )
     except TelegramAPIError as e:
-        logger.exception("Ошибка в encashment.py")
+        logger.exception("Ошибка с телеграм в encashment.py")
         await message.bot.send_message(
             text=f"Encashment report error: {e}\n"
                  f"User_id: {message.from_user.id}",

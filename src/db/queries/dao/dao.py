@@ -248,8 +248,8 @@ class AsyncOrm:
         async with async_session() as session:
             query = (
                 select(
-                    Places.title,
-                    Employees.fullname,
+                    func.coalesce(Places.title, 'удаленная точка'),
+                    func.coalesce(Employees.fullname, 'удаленный сотр.'),
                     Reports.user_id,
                     func.concat(func.sum(func.cast(Reports.revenue, Numeric))),
                 )
