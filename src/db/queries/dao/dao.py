@@ -254,8 +254,8 @@ class AsyncOrm:
                     func.concat(func.sum(func.cast(Reports.revenue, Numeric))),
                 )
                 .select_from(Reports)
-                .join(Reports.place)
-                .join(Reports.employee)
+                .join(Reports.place, isouter=True)
+                .join(Reports.employee, isouter=True)
                 .filter(
                     Reports.report_date.between(date_from, date_to),
                 )
