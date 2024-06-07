@@ -1,21 +1,23 @@
 from datetime import datetime, timezone, timedelta
 from aiogram import Bot
+
+from src.config import settings
 from src.db.queries.dao.dao import AsyncOrm
 import asyncio
 
 
 def creating_new_loop_for_checking_revenue(global_loop, bot: Bot):
-    asyncio.run_coroutine_threadsafe(send_revenue_report_by_14_days(bot), global_loop)
+    asyncio.run_coroutine_threadsafe(send_revenue_report_by_N_days(bot), global_loop)
 
 
-async def send_revenue_report_by_14_days(bot: Bot):
+async def send_revenue_report_by_N_days(bot: Bot):
     while True:
         date_now = datetime.now(tz=timezone(timedelta(hours=3.0))).date()
         how_many_days_ago = (
                 date_now - await AsyncOrm._check_data_from_finances()
         ).days
 
-        if how_many_days_ago >= 14:
+        if how_many_days_ago >= settings.DAYS_FOR_FINANCES_CHECK:
             await AsyncOrm.set_data_to_finances()
 
             data = await AsyncOrm.get_data_from_finances()

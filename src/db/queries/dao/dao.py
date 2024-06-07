@@ -2,6 +2,8 @@ from sqlalchemy import select, and_, func, delete
 from sqlalchemy import Numeric
 from sqlalchemy.orm import joinedload
 from sqlalchemy.dialects.postgresql import insert
+
+from src.config import settings
 from src.database import async_engine, async_session, Base
 from src.db.queries.models.models import Employees, Places, Reports, Finances
 
@@ -276,7 +278,7 @@ class AsyncOrm:
     async def set_data_to_finances():
         async with async_session() as session:
             time_now = datetime.now(tz=timezone(timedelta(hours=3.0))).date()
-            time_14_days_ago = time_now - timedelta(days=14) + timedelta(days=1)
+            time_N_days_ago = time_now - timedelta(days=settings.DAYS_FOR_FINANCES_CHECK) + timedelta(days=1)
 
             sum_of_revenue_query = (
                 select(
@@ -285,7 +287,7 @@ class AsyncOrm:
                 )
                 .select_from(Reports)
                 .filter(
-                    Reports.report_date.between(time_14_days_ago, time_now)
+                    Reports.report_date.between(time_N_days_ago, time_now)
                 )
                 .group_by(Reports.place_id)
             )

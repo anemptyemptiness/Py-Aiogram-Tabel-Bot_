@@ -15,6 +15,8 @@ class Settings(BaseSettings):
 
     REDIS_HOST: str
 
+    DAYS_FOR_FINANCES_CHECK: int
+
     @property
     def get_url_asyncpg(self):
         return f"postgresql+asyncpg://{self.DB_USER}:{self.DB_PASS}@{self.DB_HOST}:{self.DB_PORT}/{self.DB_NAME}"
