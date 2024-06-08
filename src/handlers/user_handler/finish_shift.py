@@ -96,7 +96,7 @@ async def send_report(message: Message, state: FSMContext, data: dict, date: str
             user_id=message.chat.id,
             place=data["place"],
             visitors=data["visitors"],
-            revenue=float(data["summary"]),
+            revenue=int(data["summary"].replace('.', '').replace(',', '')),
         )
 
         await message.answer(
