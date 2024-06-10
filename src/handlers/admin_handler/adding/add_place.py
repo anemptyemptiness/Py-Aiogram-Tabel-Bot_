@@ -51,7 +51,7 @@ async def warning_collect_place_command(message: Message):
     )
 
 
-@router_admin.message(StateFilter(FSMAdmin.add_place_id), F.text.isdigit())
+@router_admin.message(StateFilter(FSMAdmin.add_place_id), F.text)
 async def process_collect_place_id_chat_command(message: Message, state: FSMContext):
     if int(message.text) > 0:
         await message.answer(
@@ -160,7 +160,7 @@ async def process_reid_place_chat_command(callback: CallbackQuery, state: FSMCon
     await state.set_state(FSMAdmin.reid_place)
 
 
-@router_admin.message(StateFilter(FSMAdmin.reid_place), F.text.isdigit())
+@router_admin.message(StateFilter(FSMAdmin.reid_place), F.text)
 async def process_accept_reid_chat_command(message: Message, state: FSMContext):
     if int(message.text) > 0:
         await message.answer(
