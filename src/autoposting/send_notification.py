@@ -28,8 +28,9 @@ async def auto_posting(bot: Bot):
             for user_id in user_ids:
                 try:
                     message = await bot.send_message(
-                        chat_id=user_id[0],
-                        text=warning
+                        chat_id=user_id,
+                        text=f"{warning}",
+                        parse_mode="html",
                     )
 
                     if last_message is not None:
