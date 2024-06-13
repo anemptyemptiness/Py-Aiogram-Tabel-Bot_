@@ -22,7 +22,8 @@ async def send_revenue_report_by_N_days(bot: Bot):
 
             data = await AsyncOrm.get_data_from_finances()
 
-            for title, chat_id, last_money, updated_money, updated_at in data:
+            for title, _, last_money, updated_money, updated_at in data:
+                chat_id = settings.REVENUE_CHAT_ID
                 difference = updated_money - last_money
                 last_money = f"{int(last_money):,}".replace(",", " ")
                 updated_money = f"{int(updated_money):,}".replace(",", " ")

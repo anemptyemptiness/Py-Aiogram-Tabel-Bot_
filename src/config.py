@@ -5,6 +5,8 @@ from pydantic_settings import BaseSettings
 class Settings(BaseSettings):
     TOKEN: str
 
+    REVENUE_CHAT_ID: int
+
     ADMIN_ID: int
 
     DB_HOST: str
