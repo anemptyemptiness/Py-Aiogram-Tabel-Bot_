@@ -50,10 +50,6 @@ async def send_revenue_report_by_N_days(bot: Bot):
                             text=report,
                             parse_mode="html",
                         )
-
-                    await asyncio.sleep(60 * 60 * 24)  # спим 1 день
-                else:
-                    await asyncio.sleep(60 * 60 * 24)  # спим 1 день
-            await asyncio.sleep(60 * 60 * 24)  # спим 1 день
+            await asyncio.sleep(60 * 60)  # спим 1 час
         except Exception:
-            await asyncio.sleep(60 * 60 * 24)  # спим 1 день
+            await asyncio.sleep(60 * 60)  # спим 1 час
