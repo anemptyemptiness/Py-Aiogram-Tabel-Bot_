@@ -72,5 +72,5 @@ class Reports(Base):
     place: Mapped["Places"] = relationship(back_populates="reports", uselist=False)
 
     # one-2-many bound (one employee -> many reports)
-    user_id: Mapped[int] = mapped_column(ForeignKey("employees.id", ondelete="SET NULL"))
+    user_id: Mapped[int] = mapped_column(ForeignKey("employees.id", ondelete="SET NULL"), nullable=True)
     employee: Mapped["Employees"] = relationship(back_populates="reports", uselist=False)
