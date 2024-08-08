@@ -25,7 +25,7 @@ class Employees(Base):
     fullname: Mapped[str]
     username: Mapped[str]
     role: Mapped[str]
-    user_id = mapped_column(BIGINT, unique=True)
+    user_id = mapped_column(BIGINT, unique=True, nullable=True)
     created_at: Mapped[created_at]
 
     # one-2-many bound (one employee -> many reports)
