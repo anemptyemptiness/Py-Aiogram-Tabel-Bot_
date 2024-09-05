@@ -63,7 +63,7 @@ async def send_report(message: Message, state: FSMContext, data: dict, date: str
                 InputMediaPhoto(
                     media=photo_file_id,
                     caption="Фото дефектов" if i == 0 else ""
-                ) for i, photo_file_id in enumerate(data['train_has_defects'])
+                ) for i, photo_file_id in enumerate(data['photo_of_defects'])
             ]
 
             await message.bot.send_media_group(
@@ -244,8 +244,8 @@ async def warning_process_defects(message: Message):
 @router_start_shift.message(StateFilter(FSMStartShift.photo_of_defects))
 async def process_need_to_photo_of_defects(message: Message, state: FSMContext):
     if message.photo:
-        if 'train_has_defects' not in await state.get_data():
-            await state.update_data(train_has_defects=[message.photo[-1].file_id])
+        if 'photo_of_defects' not in await state.get_data():
+            await state.update_data(photo_of_defects=[message.photo[-1].file_id])
 
         await message.answer(
             text="Вы проверили колёса у паровоза, достаточно ли они накачены?",

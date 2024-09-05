@@ -77,7 +77,7 @@ class AlbumsMiddleware(BaseMiddleware):
                     await event.answer(text="Нужны только фото!")
                     return
 
-            await data["state"].update_data(train_has_defects=[photo.photo[-1].file_id for photo in context.album])
+            await data["state"].update_data(photo_of_defects=[photo.photo[-1].file_id for photo in context.album])
 
         if str(await data["state"].get_state()).split(":")[-1] == "photo_of_check":
             for info in context.album:
