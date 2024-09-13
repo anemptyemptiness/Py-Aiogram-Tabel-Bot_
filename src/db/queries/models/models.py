@@ -68,7 +68,7 @@ class Reports(Base):
     revenue: Mapped[float]
 
     # one-2-many bound (one place -> many reports)
-    place_id: Mapped[int] = mapped_column(ForeignKey("places.id", ondelete="SET NULL"))
+    place_id: Mapped[int] = mapped_column(ForeignKey("places.id", ondelete="SET NULL"), nullable=True)
     place: Mapped["Places"] = relationship(back_populates="reports", uselist=False)
 
     # one-2-many bound (one employee -> many reports)
